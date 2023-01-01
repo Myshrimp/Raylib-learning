@@ -1,0 +1,4 @@
+When using DrawText() function,if you pass in a FormatText() and get an error report,you should use TextFormat() instead.
+If you include some head files like algorithm.h,Windows.h and so on, you cannot run the project,it seems they are conflict with raylib.h
+You should load files of image or texture AFTER the InitWindow() function,or the project will crush.Likewise,it is better to load audios after InitAudioDevice().
+If you want to load numbers of one single image,you should create an array of that type and draw them each by each,using a for-loop of course.
