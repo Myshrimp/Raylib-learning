@@ -1,0 +1,64 @@
+#include"raylib.h"
+#include<iostream>
+#define Width 1920
+#define Height 1080
+#define gravity 0.5f
+struct Player {
+	Vector2 position;
+	float speed;          //horizonal velocity
+	bool jump=false;      //Is player aloft
+	float velocity = 1.0f;//vertical velocity
+}p;
+int main()
+{
+	InitWindow(Width, Height, "PHYSICS");
+	Rectangle ground = { 0,Height / 2,Width,Height / 2 };
+	p.position = { 10.0f,10.0f };
+	float centerx = p.position.x;
+	float centery = p.position.y;
+	float radius = 10;
+	float fall = 1.0f;
+	p.speed = 1.0f;
+	SetTargetFPS(60);
+	while (!WindowShouldClose())
+	{
+		centerx = p.position.x;
+		centery = p.position.y;
+		BeginDrawing();
+		ClearBackground(WHITE); 
+		DrawText(TextFormat("Y= %f", p.position.y), 10, 50, 20, RED);
+		DrawText(TextFormat("V= %f m/s", p.velocity), 10, 80, 20, RED);
+		DrawRectangle(0, Height / 2, Width, Height / 2,BLACK);
+		DrawCircle(centerx, centery, radius, BLUE);//We use a ball to represent the player.
+		p.position.y += p.velocity;
+		if (IsKeyPressed(KEY_SPACE)&&p.jump==false)
+		{		
+			p.velocity = -10.0f;//Once we jump,the ball earns an initial velocity,in an upper direction
+		}
+		if (!CheckCollisionCircleRec({ centerx, centery }, radius, ground))
+		{
+			p.jump = true;
+			p.velocity += gravity;//if the ball is aloft,the velocity will gain velocity in reverse direction 
+		}
+
+		else //make sure that the ball is on the ground
+		{
+			p.jump = false;
+			if (p.position.y + radius > ground.y)
+			{
+				p.position.y = ground.y - radius;
+			}
+		}
+		if (IsKeyDown(KEY_D))
+		{
+			p.position.x += p.speed;
+		}
+		else if (IsKeyDown(KEY_A))
+		{
+			p.position.x -= p.speed;
+		}
+	
+		EndDrawing();
+	}
+	CloseWindow();
+}
